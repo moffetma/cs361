@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>List of Current Projects</h3>
+    <hr>
+    {% for project in projects %}
+    <p>
+    <a href="{{ url_for('project_details', proj=project.id) }}"> {{ project.title }} </a>
+    </p>
+    <p> *click a project link to view the project's details </p>
+    {% endfor %}
+{% endblock %}

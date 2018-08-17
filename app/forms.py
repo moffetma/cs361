@@ -27,11 +27,14 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Email already registered.')
+        if email.data.find('.edu') == -1:
+            raise ValidationError('You must register with a .edu email')
 
 class EditProfileForm(FlaskForm):
     about_me = TextAreaField('My bio', validators=[Length(min=0, max=200)])
     submit = SubmitField('Submit')
 
 class ProjectForm(FlaskForm):
+    project_title = TextAreaField('Project Title', validators=[DataRequired(), Length(min=2, max=100)])
     project = TextAreaField('Project Summary', validators=[DataRequired(), Length(min=10, max=200)])
     submit = SubmitField('Create Project')

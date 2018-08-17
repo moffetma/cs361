@@ -1,9 +1,9 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app
 from app import db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, ProjectForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, Project
 from werkzeug.urls import url_parse
 
 @app.route('/login', methods =['GET', 'POST'])
@@ -86,3 +86,27 @@ def edit_profile():
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Edit Profile', form=form)
 
+@app.route('/create_project', methods=['GET', 'POST'])
+@login_required
+def create_project():
+    form = ProjectForm()
+    if form.validate_on_submit():
+        project = Project(title=form.project_title.data, body=form.project.data, owner=current_user)
+        db.session.add(project)
+        db.session.commit()
+        flash('Your project has been created')
+        return redirect(url_for('index'))
+    return render_template('create_project.html', title='Create Project', form=form)
+
+@app.route('/list_projects')
+@login_required 
+def list_projects():
+    projects = Project.query.all()
+    return render_template('list_projects.html', title='Projects', projects=projects)
+
+@app.route('/project_details/<proj>')
+@login_required
+def project_details(proj):
+    project = Project.query.get(proj)
+    user = User.query.get(project.user_id)
+    return render_template('project_details.html', title='Project Details', project=project, user=user)

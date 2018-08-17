@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2><i>{{ project.title }}</i></h2>
+    <h5>Description:</h5>
+    <p>
+    <p>     {{ project.body }} </p>
+    </p>
+    <br>
+    <p>	Posted by: {{ user.username }} </p>
+{% endblock %}
